@@ -17,12 +17,10 @@ class Inventario(models.Model):
 
 class Orden(models.Model):
     usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
     )
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     direccion_envio = models.CharField(max_length=200, blank=True, default="")
     fecha_creacion = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><title>Inventario - Tienda</title></head>
+<body>
+    <h1>Inventario actual</h1>
+    <p style="color:#555;">Esta vista HTML y el endpoint <code>/api/v1/comprar/</code> leen la misma base de datos.</p>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr style="background:#eee;">
+            <th>ID</th><th>Título</th><th>Precio</th><th>Stock</th><th></th>
+        </tr>
+        {% for libro in libros %}
+        <tr>
+            <td>{{ libro.id }}</td>
+            <td>{{ libro.titulo }}</td>
+            <td>${{ libro.precio }}</td>
+            <td style="text-align:center; font-weight:bold;">{{ libro.inventario.cantidad|default:"0" }}</td>
+            <td><a href="{% url 'finalizar_compra' libro.id %}">Comprar</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No hay libros cargados.</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

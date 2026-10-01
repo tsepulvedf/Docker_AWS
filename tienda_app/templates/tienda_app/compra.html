@@ -21,6 +21,7 @@
 
         <form method="post">
             {% csrf_token %}
+            <p><input type="text" name="direccion" placeholder="Dirección de envío" style="padding:8px; width:300px;"></p>
             <button type="submit" style="padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer;">
                 Confirmar Pago con Banco Nacional
             </button>
