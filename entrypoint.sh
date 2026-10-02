@@ -17,5 +17,8 @@ echo "PostgreSQL disponible."
 
 python manage.py migrate --noinput
 python manage.py seed_datos
+python manage.py collectstatic --noinput
+
+exec "$@"
 
 exec "$@"

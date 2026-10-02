@@ -15,11 +15,11 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    # CAMBIO 1: Gunicorn en vez de runserver. 'Tienda' es tu paquete con wsgi.py
+    command: gunicorn Tienda.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+      - static_volume:/app/staticfiles
     depends_on:
       db:
         condition: service_healthy
@@ -31,6 +31,19 @@ services:
       - DB_PORT=5432
       - DJANGO_ALLOWED_HOSTS=*
       - PAYMENT_PROVIDER=BANCO
+    # SIN sección 'ports': Django queda aislado, solo accesible por la red interna
+
+  # CAMBIO 2: Nginx, lo único que da la cara a internet
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/staticfiles:ro
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
+  static_volume:
