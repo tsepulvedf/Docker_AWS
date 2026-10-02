@@ -13,9 +13,8 @@ services:
       timeout: 3s
       retries: 10
 
-  web:
+  web:                                    # El monolito (v1)
     build: .
-    # CAMBIO 1: Gunicorn en vez de runserver. 'Tienda' es tu paquete con wsgi.py
     command: gunicorn Tienda.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - .:/app
@@ -31,9 +30,12 @@ services:
       - DB_PORT=5432
       - DJANGO_ALLOWED_HOSTS=*
       - PAYMENT_PROVIDER=BANCO
-    # SIN sección 'ports': Django queda aislado, solo accesible por la red interna
 
-  # CAMBIO 2: Nginx, lo único que da la cara a internet
+  pagos_flask:                            # El microservicio (v2) - EL ESTRANGULADOR
+    build: ./microservicio_pagos
+    # Sin 'ports': igual que Django, solo accesible por la red interna.
+    # Lo probamos a través de Nginx o con 'docker compose exec'.
+
   nginx:
     image: nginx:1.25-alpine
     ports:
@@ -43,6 +45,7 @@ services:
       - static_volume:/app/staticfiles:ro
     depends_on:
       - web
+      - pagos_flask
 
 volumes:
   postgres_data:
